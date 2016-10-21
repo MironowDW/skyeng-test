@@ -9,6 +9,9 @@ $config = [
     'components' => [
         'request' => [
             'cookieValidationKey' => 'sfsdfsdlkfsldfksldf',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -37,14 +40,14 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'user', 'pluralize' => false],
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
