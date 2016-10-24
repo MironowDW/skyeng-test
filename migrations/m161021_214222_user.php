@@ -9,7 +9,7 @@ class m161021_214222_user extends Migration
         $this->createTable('user', [
             'id' => $this->primaryKey(),
             'username' => $this->string()->notNull(),
-            'access_token' => $this->string()->notNull(),
+            'accessToken' => $this->string()->notNull(),
         ]);
     }
 

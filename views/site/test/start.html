@@ -1,0 +1,17 @@
+<div class="well">
+    <form novalidate ng-submit="TestStart.start()" name="TestStart.form">
+        <div class="form-group">
+            <label>Введите имя</label>
+            <input required
+                   pattern="[A-Za-zА-Яа-я0-9]+"
+                   type="text"
+                   class="form-control"
+                   name="username"
+                   ng-model="TestStart.username">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-lg" ng-click="TestStart.start()">
+            Начать тест
+        </button>
+    </form>
+</div>

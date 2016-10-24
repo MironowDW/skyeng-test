@@ -8,6 +8,7 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
+use yii\web\View;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -16,14 +17,20 @@ use yii\web\AssetBundle;
 class AppAsset extends AssetBundle
 {
     public $basePath = '@webroot';
+
     public $baseUrl = '@web';
-    public $css = [
-        'css/site.css',
-    ];
+
     public $js = [
+        'js/test.js',
     ];
+
+    public $jsOptions = [
+        'position' => View::POS_HEAD,
+    ];
+
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'app\assets\AngularAsset',
     ];
 }
