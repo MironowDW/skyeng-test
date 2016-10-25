@@ -1,5 +1,7 @@
 <?php
 
+use app\services\AccessTokenService;
+
 $params = require(__DIR__ . '/params.php');
 
 $config = [
@@ -23,13 +25,13 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
-        ],
+//        'mailer' => [
+//            'class' => 'yii\swiftmailer\Mailer',
+//            // send all mails to a file by default. You have to set
+//            // 'useFileTransport' to false and configure a transport
+//            // for the mailer to send real emails.
+//            'useFileTransport' => true,
+//        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -51,10 +53,30 @@ $config = [
                     'pluralize' => false,
                     'prefix' => 'api',
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'test',
+                    'pluralize' => false,
+                    'prefix' => 'api',
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'step',
+                    'pluralize' => false,
+                    'prefix' => 'api',
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'word',
+                    'pluralize' => false,
+                    'prefix' => 'api',
+                ],
                 '/' => 'site/index',
                 '/template/<module:.+>' => 'site/template',
             ],
         ],
+        // TODO DI?
+        AccessTokenService::class => AccessTokenService::class,
     ],
     'params' => $params,
 ];

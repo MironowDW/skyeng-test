@@ -1,0 +1,9 @@
+<div class="well">
+    <div>
+        {{ Step.word | json }}
+    </div>
+
+    <ul>
+        <li ng-repeat="variant in Step.variants">{{ variant | json }}</li>
+    </ul>
+</div>
