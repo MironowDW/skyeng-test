@@ -15,12 +15,12 @@ class Word extends ActiveRecord
 
     public function attributes()
     {
-        return ['id', 'rus', 'eng', 'value', 'isBase'];
+        return ['id', 'rus', 'eng', 'value'];
     }
 
     public function fields()
     {
-        return ['id', 'value', 'isBase'];
+        return ['id', 'value'];
     }
 
     public function rules()

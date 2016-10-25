@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
-use app\models\Step;
 use app\models\Test;
 use app\services\AccessTokenService;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 
 class StepController extends ActiveController
 {
@@ -21,13 +19,13 @@ class StepController extends ActiveController
     {
         return [
             'create' => [
-                'class' => 'yii\rest\CreateAction',
+                'class' => 'app\rest\Step\CreateAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'scenario' => $this->createScenario,
             ],
             'view' => [
-                'class' => 'yii\rest\ViewAction',
+                'class' => 'app\rest\Step\ViewAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
