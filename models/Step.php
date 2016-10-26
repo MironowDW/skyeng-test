@@ -12,12 +12,12 @@ class Step extends ActiveRecord
 
     public function attributes()
     {
-        return ['id', 'testId', 'wordId', 'direction', 'baseWord'];
+        return ['id', 'testId', 'wordId', 'direction'];
     }
 
     public function fields()
     {
-        return ['id', 'testId', 'direction', 'baseWord'];
+        return ['id', 'testId', 'direction'];
     }
 
     public function rules()
@@ -27,29 +27,33 @@ class Step extends ActiveRecord
         ];
     }
 
+    /**
+     * Для базового слова оставляем оригинал
+     */
+    public function getBaseWordValue()
+    {
+        return ($this->direction == self::DIRECTION_RUS_TO_ENG)
+            ? $this->word->rus
+            : $this->word->eng;
+    }
+
+    /**
+     * Для варианта слова оставляем перевоод
+     */
+    public function getOptionWordValue(Word $word)
+    {
+        return ($this->direction == self::DIRECTION_RUS_TO_ENG)
+            ? $word->eng
+            : $word->rus;
+    }
+
     public function getWord()
     {
         return $this->hasOne(Word::className(), ['id' => 'wordId']);
     }
 
-    /**
-     * Устанавливаем id слова
-     *
-     * @param array $data
-     * @param null $formName
-     *
-     * @return bool
-     */
-    public function load($data, $formName = null)
+    public function getStepWords()
     {
-        $testId = $data['testId'];
-        $this->wordId = Word::findWordIdForNextStep($testId);
-        $this->direction = rand(0, 1) ? self::DIRECTION_ENG_TO_RUS : self::DIRECTION_RUS_TO_ENG;
-
-        if (!$this->wordId) {
-            throw new \LogicException('Попытка создать шаг без слова ' . $testId);
-        }
-
-        parent::load($data, $formName);
+        return $this->hasMany(StepWord::className(), ['stepId' => 'id']);
     }
 }

@@ -58,23 +58,7 @@ angular
     .controller('StepController', function ($routeParams, StepResource, WordResource, AccessTokenStorage) {
         var vm = this;
 
-        vm.variants = [];
-        vm.word = null;
-
-        StepResource
-            .get({stepId: $routeParams.stepId, accessToken: AccessTokenStorage.get()}).$promise
-            .then(function (step) {
-                return WordResource.query({stepId: step.id}).$promise;
-            })
-            .then(function (words) {
-                for (var i in words) {
-                    if (words[i].isBase) {
-                        vm.word = words[i];
-                    } else {
-                        vm.variants.push(words[i]);
-                    }
-                }
-            });
+        vm.step = StepResource.get({stepId: $routeParams.stepId, accessToken: AccessTokenStorage.get()});
     })
 
     .factory('AccessTokenStorage', function () {

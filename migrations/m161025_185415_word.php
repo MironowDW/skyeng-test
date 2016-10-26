@@ -2,6 +2,9 @@
 
 use yii\db\Migration;
 
+/**
+ * Для корректной работы в этой табличке id должны идти последовательно
+ */
 class m161025_185415_word extends Migration
 {
     public function up()
