@@ -33,15 +33,4 @@ class SiteController extends Controller
     {
         return $this->renderContent(null);
     }
-
-    /**
-     * Displays angular template.
-     *
-     * @return string
-     */
-    public function actionTemplate($module)
-    {
-        // TODO Вместо этого лучше собирать шаблоны через gulp
-        return $this->renderPartial($module . '.html');
-    }
 }

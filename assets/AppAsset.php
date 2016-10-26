@@ -21,7 +21,11 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
 
     public $js = [
-        'js/test.js',
+        'js/skyeng-test/Module.js',
+        'js/skyeng-test/constants.js',
+        'js/skyeng-test/resourses.js',
+        'js/skyeng-test/page-step/StepController.js',
+        'js/skyeng-test/page-test-start/TestStartController.js',
     ];
 
     public $jsOptions = [

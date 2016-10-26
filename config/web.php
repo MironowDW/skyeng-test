@@ -2,8 +2,6 @@
 
 use app\services\AccessTokenService;
 
-$params = require(__DIR__ . '/params.php');
-
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
@@ -72,13 +70,12 @@ $config = [
                     'prefix' => 'api',
                 ],
                 '/' => 'site/index',
-                '/template/<module:.+>' => 'site/template',
             ],
         ],
         // TODO DI?
         AccessTokenService::class => AccessTokenService::class,
     ],
-    'params' => $params,
+    'params' => [],
 ];
 
 if (YII_ENV_DEV) {
