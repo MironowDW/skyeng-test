@@ -18,10 +18,13 @@ class CreateAction extends \yii\rest\CreateAction
             call_user_func($this->checkAccess, $this->id);
         }
 
+        // TODO Не даем создавать, если есть не пройденный шаг
+
         $step = new Step();
         $step->testId = \Yii::$app->getRequest()->getBodyParam('testId');
         $step->wordId = Word::findWordIdForNextStep($step->testId);
         $step->direction = rand(0, 1) ? Step::DIRECTION_ENG_TO_RUS : Step::DIRECTION_RUS_TO_ENG;
+        $step->status = Step::STATUS_NEW;
 
         if (!$step->wordId) {
             throw new \LogicException('Попытка создать шаг без слова ' . $step->testId);

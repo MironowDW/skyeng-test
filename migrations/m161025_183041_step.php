@@ -11,6 +11,7 @@ class m161025_183041_step extends Migration
             'testId' => $this->integer()->notNull(),
             'wordId' => $this->integer()->notNull(),
             'direction' => $this->string()->notNull(),
+            'status' => $this->integer()->defaultValue(0),
         ]);
     }
 

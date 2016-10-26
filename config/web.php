@@ -67,7 +67,7 @@ $config = [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => 'word',
+                    'controller' => 'attempt',
                     'pluralize' => false,
                     'prefix' => 'api',
                 ],

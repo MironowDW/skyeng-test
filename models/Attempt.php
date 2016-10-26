@@ -7,15 +7,18 @@ use yii\db\ActiveRecord;
 class Attempt extends ActiveRecord
 {
 
+    const STATUS_SUCCESS = 0;
+    const STATUS_FAIL = 1;
+
     public function attributes()
     {
-        return ['id', 'stepId', 'status'];
+        return ['id', 'stepId', 'stepWordId', 'status'];
     }
 
     public function rules()
     {
         return [
-            [['stepId'], 'required']
+            [['stepId', 'stepWordId'], 'required']
         ];
     }
 }

@@ -10,14 +10,17 @@ class Step extends ActiveRecord
     const DIRECTION_RUS_TO_ENG = 'rus_to_eng';
     const DIRECTION_ENG_TO_RUS = 'eng_to_rus';
 
+    const STATUS_NEW = 0;
+    const STATUS_CLOSE = 1;
+
     public function attributes()
     {
-        return ['id', 'testId', 'wordId', 'direction'];
+        return ['id', 'testId', 'wordId', 'direction', 'status'];
     }
 
     public function fields()
     {
-        return ['id', 'testId', 'direction'];
+        return ['id', 'testId', 'direction', 'status'];
     }
 
     public function rules()

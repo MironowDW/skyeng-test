@@ -9,6 +9,7 @@ class m161025_185953_attempt extends Migration
         $this->createTable('attempt', [
             'id' => $this->primaryKey(),
             'stepId' => $this->integer()->notNull(),
+            'stepWordId' => $this->integer()->notNull(),
             'status' => $this->integer()->defaultValue(0),
         ]);
     }

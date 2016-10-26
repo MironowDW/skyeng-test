@@ -3,7 +3,6 @@ angular
 
     .config(function($routeProvider) {
         $routeProvider
-            // TODO Использовать $state?
             .when('/test/start', {
                 templateUrl: 'template/test/start',
                 controller: 'TestStartController',
@@ -55,10 +54,18 @@ angular
     /**
      * Контроллер выполнения шага
      */
-    .controller('StepController', function ($routeParams, StepResource, WordResource, AccessTokenStorage) {
+    .controller('StepController', function ($routeParams, StepResource, AttemptResource, AccessTokenStorage) {
         var vm = this;
 
+        // Получаем данные шага
         vm.step = StepResource.get({stepId: $routeParams.stepId, accessToken: AccessTokenStorage.get()});
+
+        /**
+         * Обработка выбора перевода
+         */
+        vm.attempt = function (stepWordId) {
+            AttemptResource.save({stepWordId: stepWordId, stepId: vm.step.id, accessToken: AccessTokenStorage.get()});
+        }
     })
 
     .factory('AccessTokenStorage', function () {
@@ -91,9 +98,5 @@ angular
 
     .factory('AttemptResource', function ($resource) {
         return $resource('/api/attempt/:attemptId', {attemptId: '@attemptId'});
-    })
-
-    .factory('WordResource', function ($resource) {
-        return $resource('/api/word');
     })
 ;
