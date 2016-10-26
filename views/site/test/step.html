@@ -1,10 +1,33 @@
 <div class="list-group">
     <li class="list-group-item active">{{ Step.step.word }}</li>
 
-    <button type="button"
-            class="list-group-item"
-            ng-click="Step.attempt(option.step_word_id)"
-            ng-repeat="option in Step.step.options">
+    <a href=""
+       ng-class="{disabled: !Step.canAttempt}"
+       class="list-group-item"
+       ng-click="Step.attempt(option.step_word_id)"
+       ng-repeat="option in Step.step.options">
         {{ option.value }}
-    </button>
+    </a>
+
+    <a href=""
+       ng-show="Step.canStartNewStep"
+       class="list-group-item list-group-item-info"
+       ng-click="Step.nextStep()">
+        Успех! Следующее слово
+    </a>
+
+    <a href=""
+       ng-show="Step.isEndTest"
+       class="list-group-item list-group-item-info"
+       ng-href="#/test/start">
+        Тест завершен! На главную
+    </a>
+
+    <div class="well" ng-show="Step.canAttempt">
+        Попыток осталось: {{ Step.attempts }}
+    </div>
+
+    <div class="well" ng-show="Step.isEndTest">
+        Заработано очков: {{ Step.rating }}
+    </div>
 </div>

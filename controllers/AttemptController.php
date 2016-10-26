@@ -37,20 +37,19 @@ class AttemptController extends ActiveController
 
         // Нельзя проходить завершенный шаг
         if ($step->status != Step::STATUS_NEW) {
-            throw new ForbiddenHttpException();
+            throw new ForbiddenHttpException('Нельзя проходить завершенный шаг');
         }
 
-        // TODO Копипаст
         $accessTokenService = \Yii::$app->get(AccessTokenService::class);
         $user = $accessTokenService->getUserByAccessToken($accessToken);
         if (!$user) {
-            throw new ForbiddenHttpException();
+            throw new ForbiddenHttpException('Не верный acess token');
         }
 
         // У пользователя есть переданный курс?
-        $test = Test::findOne(['userId' => $user->id, 'id' => $step->id]);
+        $test = Test::findOne(['userId' => $user->id, 'id' => $step->testId]);
         if (!$test) {
-            throw new ForbiddenHttpException();
+            throw new ForbiddenHttpException('У пользователя нет теста');
         }
     }
 }

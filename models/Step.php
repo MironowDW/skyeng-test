@@ -11,7 +11,8 @@ class Step extends ActiveRecord
     const DIRECTION_ENG_TO_RUS = 'eng_to_rus';
 
     const STATUS_NEW = 0;
-    const STATUS_CLOSE = 1;
+    const STATUS_FAIL = 1;
+    const STATUS_SUCCESS = 2;
 
     public function attributes()
     {
@@ -53,6 +54,11 @@ class Step extends ActiveRecord
     public function getWord()
     {
         return $this->hasOne(Word::className(), ['id' => 'wordId']);
+    }
+
+    public function getTest()
+    {
+        return $this->hasOne(Test::className(), ['id' => 'testId']);
     }
 
     public function getStepWords()

@@ -8,15 +8,19 @@ use yii\db\ActiveRecord;
 class Test extends ActiveRecord
 {
 
+    const STATUS_NEW = 0;
+    const STATUS_SUCCESS = 1;
+    const STATUS_FAIL = 2;
+
     public function attributes()
     {
-        return ['id', 'userId'];
+        return ['id', 'userId', 'status'];
     }
 
     public function rules()
     {
         return [
-            [['userId'], 'required']
+            [['userId', 'status'], 'required']
         ];
     }
 
@@ -36,6 +40,7 @@ class Test extends ActiveRecord
         $user = $accessTokenService->getUserByAccessToken($accessToken);
 
         $this->userId = $user->id;
+        $this->status = Test::STATUS_NEW;
 
         return true;
     }
