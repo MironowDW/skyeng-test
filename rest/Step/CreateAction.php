@@ -35,7 +35,7 @@ class CreateAction extends \yii\rest\CreateAction
             };
 
             // Сохранить список слов в шаге
-            $wordIds = $this->generateWordIds($step->wordId);
+            $wordIds = $this->generateWordIds($step->wordId, $step);
             $this->saveWords($wordIds, $step);
 
             $response = \Yii::$app->getResponse();
@@ -79,22 +79,23 @@ class CreateAction extends \yii\rest\CreateAction
     /**
      * Генери массив из вариантов ответов слов, в который входит базовое слово + три рандомных
      *
+     * @param Step $step
      * @param $baseWordId
      *
      * @return array
      *
      * @throws \Exception
      */
-    private function generateWordIds($baseWordId)
+    private function generateWordIds($baseWordId, Step $step)
     {
         // Считаем, что id в таблице слов упорядочены и идут без пробелов
         $minId = Word::find()->min('id');
         $maxId = Word::find()->max('id');
 
-        // Что бы избежать бесконечного цикла
-        if (($maxId - $minId) < (Word::VARIANT_COUNT - 1)) {
-            throw new \Exception('Не хватает слов для вариантов ответов');
-        }
+        // Храним значения переводов, что бы в тесте не было одинаковых переводов
+        $wordValues = [];
+        $baseWord = Word::findOne($baseWordId);
+        $wordValues[] = $step->getOptionWordValue($baseWord);
 
         // В вариантах всегда должен быть правильный ответ
         $wordIds = [$baseWordId];
@@ -105,6 +106,15 @@ class CreateAction extends \yii\rest\CreateAction
                 continue;
             }
 
+            $word = Word::findOne($randId);
+            $wordValue = $step->getOptionWordValue($word);
+
+            // Пропускаем пвторы
+            if (in_array($wordValue, $wordValues)) {
+                continue;
+            }
+
+            $wordValues[] = $wordValue;
             $wordIds[] = $randId;
         }
 

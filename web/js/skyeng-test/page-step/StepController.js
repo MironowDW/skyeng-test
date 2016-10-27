@@ -60,8 +60,8 @@ angular
                     vm.lastAttempt = attempt;
                     vm.test = attempt.test;
 
-                    // Выбрали не правильный вариант, но есть еще попытки
-                    if (attempt.status == Attempt_STATUS_FAIL && attempt.test.status != Test_STATUS_FAIL) {
+                    // Если ичего не провалено - можем попробовать еще
+                    if (attempt.step.status == Step_STATUS_NEW && vm.test.status == Test_STATUS_NEW) {
                         vm.canAttempt = true;
                     }
                 });

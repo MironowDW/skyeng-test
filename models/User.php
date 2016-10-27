@@ -15,6 +15,7 @@ class User extends ActiveRecord
     public function rules()
     {
         return [
+            ['username', 'filter', 'filter' => 'htmlspecialchars'],
             [['username', 'accessToken'], 'required']
         ];
     }
