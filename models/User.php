@@ -29,16 +29,8 @@ class User extends ActiveRecord
      */
     public function load($data, $formName = null)
     {
-        $this->generateAccessToken();
+        $this->accessToken = md5(uniqid());
 
         return parent::load($data, $formName);
-    }
-
-    /**
-     * Рандомный accessToken
-     */
-    private function generateAccessToken()
-    {
-        $this->accessToken = md5(uniqid());
     }
 }

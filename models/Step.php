@@ -32,6 +32,34 @@ class Step extends ActiveRecord
     }
 
     /**
+     * Добавляем логику для отображения всего шага
+     *
+     * @param array $fields
+     * @param array $expand
+     * @param bool $recursive
+     *
+     * @return array
+     */
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        $array = parent::toArray($fields, $expand, $recursive);
+
+        // Слово, которое нужно перевести
+        $array['word'] = $this->getBaseWordValue();
+
+        // Варианты ответа
+        $array['options'] = [];
+        foreach ($this->stepWords as $stepWord) {
+            $array['options'][] = [
+                'step_word_id' => $stepWord->id, // Не указываем id слова, что бы значение нельзя было получить через api
+                    'value' => $this->getOptionWordValue($stepWord->word),
+            ];
+        }
+
+        return $array;
+    }
+
+    /**
      * Для базового слова оставляем оригинал
      */
     public function getBaseWordValue()
@@ -42,7 +70,7 @@ class Step extends ActiveRecord
     }
 
     /**
-     * Для варианта слова оставляем перевоод
+     * Для варианта слова оставляем перевод
      */
     public function getOptionWordValue(Word $word)
     {

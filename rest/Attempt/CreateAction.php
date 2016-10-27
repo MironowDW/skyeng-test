@@ -24,11 +24,11 @@ class CreateAction extends \yii\rest\CreateAction
         $attempt->stepWordId = \Yii::$app->getRequest()->getBodyParam('stepWordId');
         $attempt->status = Attempt::STATUS_SUCCESS;
 
-        $stepWord = StepWord::findOne($attempt->stepWordId);
-        $step = Step::findOne($attempt->stepId);
+        $step = $attempt->step;
         $test = $step->test;
 
-        $attempt->status = ($step->wordId == $stepWord->wordId)
+        // Определяем статус попытки
+        $attempt->status = ($step->wordId == $attempt->stepWord->wordId)
             ? Attempt::STATUS_SUCCESS
             : Attempt::STATUS_FAIL;
 
@@ -36,44 +36,65 @@ class CreateAction extends \yii\rest\CreateAction
             throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
 
-        // Проверяем количество попыток
-        if ($attempt->status == Attempt::STATUS_FAIL) {
-            $failAttemptsCount = Attempt::find()
-                ->andWhere(['status' => Attempt::STATUS_FAIL])
-                ->andWhere(['stepId' => $attempt->stepId])
-                ->count();
-
-            if ($failAttemptsCount >= Attempt::MAX) {
-                $step->status = Step::STATUS_FAIL;
-                $step->update();
-
-                $test->status = Test::STATUS_FAIL;
-                $test->update();
-            }
-        } else {
-            $step->status = Step::STATUS_SUCCESS;
+        // Обновялем статус шага и теста при провале
+        if ($this->isFailStep($attempt)) {
+            $step->status = Step::STATUS_FAIL;
             $step->update();
 
-            // Проверяем, возможно слова закончились
-            $wordId = Word::findWordIdForNextStep($step->testId);
-            if (!$wordId) {
-                $test->status = Test::STATUS_SUCCESS;
-                $test->update();
-            }
+            $test->status = Test::STATUS_FAIL;
+            $test->update();
+        }
+
+        // Обновляем статус теста в случае успеха
+        if ($this->isSuccessTest($attempt)) {
+            $test->status = Test::STATUS_SUCCESS;
+            $test->update();
+        }
+
+        // Обновляем статус попытки на успешную
+        if ($attempt->status == Attempt::STATUS_SUCCESS) {
+            $step->status = Step::STATUS_SUCCESS;
+            $step->update();
         }
 
         $response = \Yii::$app->getResponse();
         $response->setStatusCode(201);
         $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $step->id], true));
 
-        $arrayResponse = $attempt->toArray();
-        $arrayResponse['step'] = $step->toArray();
-        $arrayResponse['test'] = $test->toArray();
-        $arrayResponse['rating'] = Step::find()
-            ->andWhere(['status' => Step::STATUS_SUCCESS])
-            ->andWhere(['testId' => $test->id])
+        return $attempt;
+    }
+
+    /**
+     * Шаг завален?
+     *
+     * @param $attempt
+     *
+     * @return bool
+     */
+    private function isFailStep(Attempt $attempt)
+    {
+        if ($attempt->status != Attempt::STATUS_FAIL) {
+            return false;
+        }
+
+        // Количество неудачных попыток в шаге
+        $failAttemptsCount = Attempt::find()
+            ->andWhere(['status' => Attempt::STATUS_FAIL])
+            ->andWhere(['stepId' => $attempt->stepId])
             ->count();
 
-        return $arrayResponse;
+        return $failAttemptsCount >= Attempt::MAX;
+    }
+
+    /**
+     * Тест успешно завершается в случае завершения слов
+     *
+     * @param Attempt $attempt
+     *
+     * @return bool
+     */
+    private function isSuccessTest(Attempt $attempt)
+    {
+        return !Word::findWordIdForNextStep($attempt->step->testId);
     }
 }

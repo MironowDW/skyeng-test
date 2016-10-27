@@ -23,5 +23,4 @@ class UserController extends ActiveController
             ],
         ];
     }
-
 }

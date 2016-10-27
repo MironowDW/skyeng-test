@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\services\AccessTokenService;
+use app\services\PermissionService;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 
@@ -37,12 +37,9 @@ class TestController extends ActiveController
      */
     public function checkAccess($action, $model = null, $params = [])
     {
+        $permissionService = \Yii::$app->get(PermissionService::class);
         $accessToken = \Yii::$app->getRequest()->getBodyParam('accessToken');
 
-        $accessTokenService = \Yii::$app->get(AccessTokenService::class);
-        $user = $accessTokenService->getUserByAccessToken($accessToken);
-        if (!$user) {
-            throw new ForbiddenHttpException();
-        }
+        $permissionService->checkAccessToken($accessToken);
     }
 }

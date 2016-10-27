@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Test;
-use app\services\AccessTokenService;
+use app\models\Step;
+use app\services\PermissionService;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 
@@ -25,7 +25,7 @@ class StepController extends ActiveController
                 'scenario' => $this->createScenario,
             ],
             'view' => [
-                'class' => 'app\rest\Step\ViewAction',
+                'class' => 'yii\rest\ViewAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
@@ -43,21 +43,23 @@ class StepController extends ActiveController
      */
     public function checkAccess($action, $model = null, $params = [])
     {
+        $permissionService = \Yii::$app->get(PermissionService::class);
         $request = \Yii::$app->getRequest();
 
         $accessToken = $request->getIsPost() ? $request->getBodyParam('accessToken') : $request->getQueryParam('accessToken');
         $testId = $model ? $model->testId : $request->getBodyParam('testId');
 
-        $accessTokenService = \Yii::$app->get(AccessTokenService::class);
-        $user = $accessTokenService->getUserByAccessToken($accessToken);
-        if (!$user) {
-            throw new ForbiddenHttpException();
-        }
+        // Проверяем права на тест
+        $permissionService->checkTest($accessToken, $testId);
 
-        // У пользователя есть переданный курс?
-        $test = Test::findOne(['userId' => $user->id, 'id' => $testId]);
-        if (!$test) {
-            throw new ForbiddenHttpException();
+        // Не даем создавать шаг6 если есть не завершенный
+        $uncompletedStepCount = Step::find()
+            ->andWhere(['testId' => $testId])
+            ->andWhere(['status' => Step::STATUS_NEW])
+            ->count();
+
+        if ($uncompletedStepCount > 0) {
+            throw new ForbiddenHttpException('Не верный access token');
         }
     }
 }

@@ -18,8 +18,6 @@ class CreateAction extends \yii\rest\CreateAction
             call_user_func($this->checkAccess, $this->id);
         }
 
-        // TODO Не даем создавать, если есть не пройденный шаг
-
         $step = new Step();
         $step->testId = \Yii::$app->getRequest()->getBodyParam('testId');
         $step->wordId = Word::findWordIdForNextStep($step->testId);
@@ -30,25 +28,15 @@ class CreateAction extends \yii\rest\CreateAction
             throw new \LogicException('Попытка создать шаг без слова ' . $step->testId);
         }
 
-        // Сразу генерим варианты ответов
-        $wordIds = $this->generateWordIds($step->wordId);
-
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             if (!$step->save()) {
                 throw new Exception('Ошибка при сохранение шага ' . $step->testId);
             };
 
-            foreach ($wordIds as $wordId) {
-                $stepWord = new StepWord();
-                $stepWord->wordId = $wordId;
-                $stepWord->stepId = $step->id;
-                $stepWord->isBase = $wordId == $step->wordId;
-
-                if (!$stepWord->save()) {
-                    throw new Exception('Ошибка при сохранение слова в шаг ' . $wordId . ' ' . $step->id);
-                };
-            }
+            // Сохранить список слов в шаге
+            $wordIds = $this->generateWordIds($step->wordId);
+            $this->saveWords($wordIds, $step);
 
             $response = \Yii::$app->getResponse();
             $response->setStatusCode(201);
@@ -64,6 +52,28 @@ class CreateAction extends \yii\rest\CreateAction
         }
 
         return $step;
+    }
+
+    /**
+     * Сохранить список слов в шаге
+     *
+     * @param array $wordIds
+     * @param Step $step
+     *
+     * @throws Exception
+     */
+    private function saveWords(array $wordIds, Step $step)
+    {
+        foreach ($wordIds as $wordId) {
+            $stepWord = new StepWord();
+            $stepWord->wordId = $wordId;
+            $stepWord->stepId = $step->id;
+            $stepWord->isBase = $wordId == $step->wordId;
+
+            if (!$stepWord->save()) {
+                throw new Exception('Ошибка при сохранение слова в шаг ' . $wordId . ' ' . $step->id);
+            };
+        }
     }
 
     /**

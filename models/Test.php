@@ -25,7 +25,7 @@ class Test extends ActiveRecord
     }
 
     /**
-     * Юерем id пользователя по токену
+     * Берем id пользователя по токену
      *
      * @param array $data
      * @param null $formName
@@ -43,5 +43,16 @@ class Test extends ActiveRecord
         $this->status = Test::STATUS_NEW;
 
         return true;
+    }
+
+    /**
+     * Рейтинг равняется количеству удачных шагов
+     */
+    public function getRating()
+    {
+        return Step::find()
+            ->andWhere(['status' => Step::STATUS_SUCCESS])
+            ->andWhere(['testId' => $this->id])
+            ->count();
     }
 }

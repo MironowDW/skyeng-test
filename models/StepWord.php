@@ -3,7 +3,6 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
-use yii\db\Query;
 
 class StepWord extends ActiveRecord
 {
