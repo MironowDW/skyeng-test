@@ -46,6 +46,7 @@ class Step extends ActiveRecord
 
         // Слово, которое нужно перевести
         $array['word'] = $this->getBaseWordValue();
+        $array['test'] = $this->test->toArray();
 
         // Варианты ответа
         $array['options'] = [];

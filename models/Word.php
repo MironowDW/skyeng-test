@@ -39,8 +39,6 @@ class Word extends ActiveRecord
      */
     public static function findWordIdForNextStep($testId)
     {
-        // TODO Надо брать рандомное
-
         $query = new Query();
         $query->addSelect(['w.id'])
             ->from ([Word::tableName() . ' w'])

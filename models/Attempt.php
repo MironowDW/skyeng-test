@@ -41,11 +41,10 @@ class Attempt extends ActiveRecord
         $step = $this->step;
         $test = $step->test;
 
-        $array = $this->toArray($fields, $expand, $recursive);
+        $array = parent::toArray($fields, $expand, $recursive);
 
         $array['step'] = $step->toArray();
         $array['test'] = $test->toArray();
-        $array['rating'] = $test->getRating();
 
         return $array;
     }

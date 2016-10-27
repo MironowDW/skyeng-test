@@ -21,7 +21,7 @@ class PermissionService
         $accessTokenService = \Yii::$app->get(AccessTokenService::class);
         $user = $accessTokenService->getUserByAccessToken($accessToken);
         if (!$user) {
-            throw new ForbiddenHttpException('Не верный access token');
+            throw new ForbiddenHttpException('Не верный access token checkTest');
         }
 
         $test = Test::findOne(['userId' => $user->id, 'id' => $testId]);
@@ -42,7 +42,7 @@ class PermissionService
         $accessTokenService = \Yii::$app->get(AccessTokenService::class);
         $user = $accessTokenService->getUserByAccessToken($accessToken);
         if (!$user) {
-            throw new ForbiddenHttpException('Не верный access token');
+            throw new ForbiddenHttpException('Не верный access token checkAccessToken');
         }
     }
 

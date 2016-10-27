@@ -10,14 +10,14 @@
     </a>
 
     <a href=""
-       ng-show="Step.canStartNewStep"
+       ng-show="Step.canStartNewStep()"
        class="list-group-item list-group-item-info"
        ng-click="Step.nextStep()">
         Успех! Следующее слово
     </a>
 
     <a href=""
-       ng-show="Step.isEndTest"
+       ng-show="Step.isEndTest()"
        class="list-group-item list-group-item-info"
        ng-href="#/test/start">
         Тест завершен! На главную
@@ -27,7 +27,7 @@
         Попыток осталось: {{ Step.attempts }}
     </div>
 
-    <div class="well" ng-show="Step.isEndTest">
-        Заработано очков: {{ Step.rating }}
+    <div class="well" ng-show="Step.isEndTest()">
+        Заработано очков: {{ Step.test.rating }}
     </div>
 </div>

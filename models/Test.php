@@ -55,4 +55,21 @@ class Test extends ActiveRecord
             ->andWhere(['testId' => $this->id])
             ->count();
     }
+
+    /**
+     * Добавляем логику для отображения
+     *
+     * @param array $fields
+     * @param array $expand
+     * @param bool $recursive
+     *
+     * @return array
+     */
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        $array = parent::toArray($fields, $expand, $recursive);
+        $array['rating'] = $this->getRating();
+
+        return $array;
+    }
 }

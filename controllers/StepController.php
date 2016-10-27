@@ -52,14 +52,16 @@ class StepController extends ActiveController
         // Проверяем права на тест
         $permissionService->checkTest($accessToken, $testId);
 
-        // Не даем создавать шаг6 если есть не завершенный
-        $uncompletedStepCount = Step::find()
-            ->andWhere(['testId' => $testId])
-            ->andWhere(['status' => Step::STATUS_NEW])
-            ->count();
+        if ($action == 'create') {
+            // Не даем создавать шаг, если есть не завершенный
+            $uncompletedStepCount = Step::find()
+                ->andWhere(['testId' => $testId])
+                ->andWhere(['status' => Step::STATUS_NEW])
+                ->count();
 
-        if ($uncompletedStepCount > 0) {
-            throw new ForbiddenHttpException('Не верный access token');
+            if ($uncompletedStepCount > 0) {
+                throw new ForbiddenHttpException('Есть незавершенные шаги');
+            }
         }
     }
 }
